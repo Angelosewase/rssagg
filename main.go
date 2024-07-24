@@ -52,6 +52,7 @@ func main() {
 	v1Router.Get("/healthz", handleReadiness)
 	v1Router.Get("/err", handlerErr)
 	v1Router.Post("/users",apiCfg.handlerCreateUser)
+	v1Router.Get("/user",apiCfg.handleGetuser)
 
 	router.Mount("/v1", v1Router)
 	srv := &http.Server{
@@ -60,6 +61,7 @@ func main() {
 	}
 
 	err = srv.ListenAndServe()
+
 	if err != nil {
 		log.Fatal(err)
 	}

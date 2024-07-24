@@ -10,7 +10,8 @@ import (
 
 type User struct {
 	ID        string
-	Createdat time.Time
-	Updateat  time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 	Name      string
+	ApiKey    string
 }

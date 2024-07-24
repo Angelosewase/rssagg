@@ -12,25 +12,44 @@ import (
 )
 
 const createUser = `-- name: CreateUser :execresult
-INSERT INTO users (
-  id, createdAt, updateAt, name
+INSERT INTO users(
+  id, created_at, updated_at, name, api_key
 )  VALUES(
-  ?, ?, ?,?
+  ?, ?, ?,?,?
 )
 `
 
 type CreateUserParams struct {
 	ID        string
-	Createdat time.Time
-	Updateat  time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 	Name      string
+	ApiKey    string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, createUser,
 		arg.ID,
-		arg.Createdat,
-		arg.Updateat,
+		arg.CreatedAt,
+		arg.UpdatedAt,
 		arg.Name,
+		arg.ApiKey,
 	)
+}
+
+const getUserByApiKey = `-- name: GetUserByApiKey :one
+SELECT id, created_at, updated_at, name, api_key FROM users WHERE api_key= ?
+`
+
+func (q *Queries) GetUserByApiKey(ctx context.Context, apiKey string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByApiKey, apiKey)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.ApiKey,
+	)
+	return i, err
 }
